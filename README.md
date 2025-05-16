@@ -16,6 +16,15 @@ A parent web component to inherit from.
 
 <!-- toc -->
 
+- [install](#install)
+- [API](#api)
+  * [ESM](#esm)
+  * [Common JS](#common-js)
+- [Use](#use)
+  * [JS](#js)
+
+<!-- tocstop -->
+
 ## install
 
 ```sh
