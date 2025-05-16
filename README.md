@@ -48,9 +48,17 @@ const { Input } = require('@substrate-system/input')
 -----------------
 
 ## Use
-Inherit from this module. It has some methods for common event handling.
+Inherit from this module.
 
 ### JS
 ```js
 import { Input } from '@substrate-system/input'
+
+class FooBar extends Input {
+    static tag = 'foo-bar'
+}
+
+document.body.innerHTML += `
+    <foo-bar></foo-bar>
+`
 ```
