@@ -1,6 +1,3 @@
-import { createDebug } from '@substrate-system/debug'
-const debug = createDebug()
-
 export abstract class Input extends HTMLElement {
     // Define the attributes to observe
     // need this for `attributeChangedCallback`
@@ -74,9 +71,7 @@ export abstract class Input extends HTMLElement {
      * @param  {string} newValue The new attribute value
      */
     handleChange_disabled (oldValue:string, newValue:string) {
-        debug('changing disabled', oldValue, newValue)
         if (!this.input) {
-            debug('not input')
             setTimeout(() => {
                 if (newValue === null) {
                     // [example] was removed
@@ -87,9 +82,7 @@ export abstract class Input extends HTMLElement {
                 }
             }, 0)  // wait to render
         } else {
-            debug('input')
             if (newValue === null) {
-                debug('is null')
                 this.disabled = false
             } else {
                 this.disabled = true
