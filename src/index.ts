@@ -1,33 +1,62 @@
 import { createDebug } from '@substrate-system/debug'
 const debug = createDebug()
 
-// for docuement.querySelector
-declare global {
-    interface HTMLElementTagNameMap {
-        'input': Example
-    }
-}
-
-export class Example extends HTMLElement {
+export abstract class Input extends HTMLElement {
     // Define the attributes to observe
     // need this for `attributeChangedCallback`
-    static observedAttributes = ['example']
+    static observedAttributes = ['autofocus', 'disabled', 'spinning']
+    static tag:string
 
-    example:string|null
+    static define (this:((new (...args:any[]) => Input) & typeof Input)) {
+        if (!('customElements' in window)) return
+
+        return customElements.define(
+            this.tag,
+            this
+        )
+    }
 
     constructor () {
         super()
-        const example = this.getAttribute('example')
-        this.example = example
+        const disabled = this.getAttribute('disabled')
+        if (disabled !== null) {
+            setTimeout(() => {
+                // need to wait for it to render
+                this.disabled = true
+            }, 0)
+        }
+    }
 
-        this.innerHTML = `<div>
-            <p>example</p>
-            <ul>
-                ${Array.from(this.children).filter(Boolean).map(node => {
-                    return `<li>${node.outerHTML}</li>`
-                }).join('')}
-            </ul>
-        </div>`
+    get input ():HTMLInputElement|null {
+        return this.querySelector('input')
+    }
+
+    get tabindex ():number {
+        const i = this.input?.getAttribute('tabindex')
+        if (!i) return 0
+        return parseInt(i)
+    }
+
+    /**
+     * Remove from `this` element and also child.
+     */
+    _removeAttribute (name:string) {
+        this.removeAttribute(name)
+        this.input?.removeAttribute(name)
+    }
+
+    get disabled ():boolean {
+        return !!(this.input?.hasAttribute('disabled'))
+    }
+
+    set disabled (disabledValue:boolean) {
+        if (!disabledValue) {
+            this._removeAttribute('disabled')
+            this.input?.setAttribute('aria-disabled', 'false')
+        } else {
+            this.input?.setAttribute('disabled', '')
+            this.input?.setAttribute('aria-disabled', 'true')
+        }
     }
 
     /**
@@ -68,31 +97,60 @@ export class Example extends HTMLElement {
     connectedCallback () {
         debug('connected')
 
-        const observer = new MutationObserver(function (mutations) {
-            mutations.forEach((mutation) => {
-                if (mutation.addedNodes.length) {
-                    debug('Node added: ', mutation.addedNodes)
-                }
-            })
-        })
-
-        observer.observe(this, { childList: true })
-
         this.render()
     }
 
-    render () {
-        this.innerHTML = `<div>
-            <p>example</p>
-            <ul>
-                ${Array.from(this.children).filter(Boolean).map(node => {
-                    return `<li>${node.outerHTML}</li>`
-                }).join('')}
-            </ul>
-        </div>`
+    get type ():string|null|undefined {
+        return this.input?.getAttribute('type')
     }
-}
 
-if ('customElements' in window) {
-    customElements.define('input', Example)
+    set type (value:string) {
+        this._setAttribute('type', value)
+    }
+
+    /**
+     * Set attributes on the internal button element.
+     */
+    _setAttribute (name:string, value:boolean|string|null):void {
+        if (value === false) {
+            // false means remove the attribute
+            this._removeAttribute(name)
+            this.input?.removeAttribute(name)
+        } else {
+            if (value === true) {
+                // true means set the attribute with no value
+                return this.input?.setAttribute(name, '')
+            }
+
+            if (value === null) {
+                // null means remove
+                return this._removeAttribute(name)
+            }
+
+            // else, set value to a string
+            this.input?.setAttribute(name, value)
+        }
+    }
+
+    render () {
+        const {
+            type,
+            autofocus,
+            tabindex,
+            disabled,
+        } = this
+
+        const classes:string[] = ['substrate-input']
+
+        const props = ([
+            `class="${classes.filter(Boolean).join(' ')}"`,
+            disabled ? 'disabled' : '',
+            autofocus ? 'autofocus' : '',
+            type ? `type="${this.type}"` : '',
+            tabindex ? `tabindex="${tabindex}"` : 'tabindex="0"',
+            'role="button"'
+        ]).filter(Boolean).join(' ')
+
+        this.innerHTML = `<input ${props}>${this.innerHTML}</input>`
+    }
 }
