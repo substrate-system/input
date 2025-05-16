@@ -9,11 +9,9 @@ export abstract class Input extends HTMLElement {
 
     static define (this:((new (...args:any[]) => Input) & typeof Input)) {
         if (!('customElements' in window)) return
+        if (customElements.get(this.tag)) return  // only define it once
 
-        return customElements.define(
-            this.tag,
-            this
-        )
+        return customElements.define(this.tag, this)
     }
 
     constructor () {
@@ -25,6 +23,13 @@ export abstract class Input extends HTMLElement {
                 this.disabled = true
             }, 0)
         }
+
+        setTimeout(() => {
+            const attr = this.getAttribute('value')
+            if (attr) {
+                this.value = attr
+            }
+        }, 0)
     }
 
     get input ():HTMLInputElement|null {
@@ -66,13 +71,27 @@ export abstract class Input extends HTMLElement {
      * @param  {string} oldValue The old attribute value
      * @param  {string} newValue The new attribute value
      */
-    handleChange_example (oldValue:string, newValue:string) {
-        debug('handling example change', oldValue, newValue)
-
-        if (newValue === null) {
-            // [example] was removed
+    handleChange_disabled (oldValue:string, newValue:string) {
+        debug('changing disabled', oldValue, newValue)
+        if (!this.input) {
+            debug('not input')
+            setTimeout(() => {
+                if (newValue === null) {
+                    // [example] was removed
+                    this.disabled = false
+                } else {
+                    // set [example] attribute
+                    this.disabled = true
+                }
+            }, 0)  // wait to render
         } else {
-            // set [example] attribute
+            debug('input')
+            if (newValue === null) {
+                debug('is null')
+                this.disabled = false
+            } else {
+                this.disabled = true
+            }
         }
     }
 
@@ -84,19 +103,12 @@ export abstract class Input extends HTMLElement {
      * @param  {string} newValue The new attribute value
      */
     attributeChangedCallback (name:string, oldValue:string, newValue:string) {
-        debug('an attribute changed', name)
         const handler = this[`handleChange_${name}`];
-        (handler && handler(oldValue, newValue))
+        (handler && handler.call(this, oldValue, newValue))
         this.render()
     }
 
-    disconnectedCallback () {
-        debug('disconnected')
-    }
-
     connectedCallback () {
-        debug('connected')
-
         this.render()
     }
 
@@ -108,28 +120,32 @@ export abstract class Input extends HTMLElement {
         this._setAttribute('type', value)
     }
 
+    get value () {
+        return this.input?.value
+    }
+
+    set value (text:string|undefined|null) {
+        if (!text) this.input?.removeAttribute('value')
+        else {
+            this.input!.value = text
+        }
+    }
+
     /**
-     * Set attributes on the internal button element.
+     * Set attributes on the internal input element.
      */
     _setAttribute (name:string, value:boolean|string|null):void {
-        if (value === false) {
-            // false means remove the attribute
-            this._removeAttribute(name)
-            this.input?.removeAttribute(name)
-        } else {
-            if (value === true) {
-                // true means set the attribute with no value
-                return this.input?.setAttribute(name, '')
-            }
-
-            if (value === null) {
-                // null means remove
-                return this._removeAttribute(name)
-            }
-
-            // else, set value to a string
-            this.input?.setAttribute(name, value)
+        if (!value) {
+            return this._removeAttribute(name)
         }
+
+        if (value === true) {
+            // true means set the attribute with no value
+            return this.input?.setAttribute(name, '')
+        }
+
+        // else, set the value
+        this.input?.setAttribute(name, value)
     }
 
     render () {
@@ -138,9 +154,12 @@ export abstract class Input extends HTMLElement {
             autofocus,
             tabindex,
             disabled,
+            value
         } = this
 
         const classes:string[] = ['substrate-input']
+
+        const btn = !!(this.type === 'submit' || this.type === 'button')
 
         const props = ([
             `class="${classes.filter(Boolean).join(' ')}"`,
@@ -148,9 +167,12 @@ export abstract class Input extends HTMLElement {
             autofocus ? 'autofocus' : '',
             type ? `type="${this.type}"` : '',
             tabindex ? `tabindex="${tabindex}"` : 'tabindex="0"',
-            'role="button"'
+            btn ? 'role="button"' : '',
+            value ? `value=${value}` : ''
         ]).filter(Boolean).join(' ')
 
-        this.innerHTML = `<input ${props}>${this.innerHTML}</input>`
+        this.innerHTML = `<input
+            ${props}
+        />`
     }
 }

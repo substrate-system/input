@@ -2,10 +2,27 @@ import { Input } from '../src/index.js'
 
 declare global {
     interface HTMLElementTagNameMap {
-        'example-input':ExampleInput
+        'example-input':ExampleInput;
+        'text-input':TextInput;
     }
 }
 
 class ExampleInput extends Input {
-    static observedAttributes = ['disabled']
+    static tag = 'example-input'
+
+    get type () {
+        return 'submit'
+    }
 }
+
+ExampleInput.define()
+
+export class TextInput extends Input {
+    static tag = 'text-input'
+
+    get type () {
+        return 'text'
+    }
+}
+
+TextInput.define()
