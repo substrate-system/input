@@ -58,6 +58,9 @@ class FooBar extends Input {
     static tag = 'foo-bar'
 }
 
+// Use the static method `define`
+FooBar.define()
+
 document.body.innerHTML += `
     <foo-bar></foo-bar>
 `
