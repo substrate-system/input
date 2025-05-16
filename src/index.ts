@@ -24,11 +24,13 @@ export abstract class Input extends HTMLElement {
             }, 0)
         }
 
+        // timeout b/c we need to render first
         setTimeout(() => {
             const attr = this.getAttribute('value')
-            if (attr) {
-                this.value = attr
-            }
+            if (attr) this.value = attr
+
+            const type = this.getAttribute('type')
+            if (type) this.type = type
         }, 0)
     }
 
