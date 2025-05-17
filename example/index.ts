@@ -7,13 +7,13 @@ document.body.innerHTML += `
     <example-input value="hello"></example-input>
 `
 
-setTimeout(() => {
+setTimeout(() => {  // wait for things to render
     const el = document.querySelector('example-input')
     el?.addEventListener('click', ev => {
         ev.preventDefault()
         debug('click...')
     })
-}, 0)  // wait for things to render
+}, 0)
 
 document.body.innerHTML += `
     <example-input disabled value="this is disabled"></example-input>
