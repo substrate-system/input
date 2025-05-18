@@ -5,6 +5,10 @@ import { Input } from '../src/index.js'
 test('input element', async t => {
     class FooBar extends Input {
         static tag = 'foo-bar'
+
+        render () {
+            this.innerHTML = super.render()!
+        }
     }
     FooBar.define()
 
@@ -26,6 +30,10 @@ test('Set the "type"', async t => {
 
         get type () {
             return 'text'
+        }
+
+        render ():string|void {
+            this.innerHTML = super.render()!
         }
     }
     Abc.define()
