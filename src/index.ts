@@ -44,12 +44,12 @@ export abstract class Input extends HTMLElement {
         return parseInt(i)
     }
 
-    get name ():string|undefined {
+    get name ():string|undefined|null {
         return this.input?.name
     }
 
     set name (newName:string) {
-        if (!this.input) throw new Error('not input')
+        if (!this.input) return
         this.input.name = newName
     }
 
