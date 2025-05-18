@@ -28,6 +28,9 @@ export abstract class Input extends HTMLElement {
 
             const type = this.getAttribute('type')
             if (type) this.type = type
+
+            const name = this.getAttribute('name')
+            if (name) this.name = name
         }, 0)
     }
 
@@ -39,6 +42,15 @@ export abstract class Input extends HTMLElement {
         const i = this.input?.getAttribute('tabindex')
         if (!i) return 0
         return parseInt(i)
+    }
+
+    get name ():string|undefined {
+        return this.input?.name
+    }
+
+    set name (newName:string) {
+        if (!this.input) throw new Error('not input')
+        this.input.name = newName
     }
 
     /**
@@ -143,13 +155,14 @@ export abstract class Input extends HTMLElement {
         this.input?.setAttribute(name, value)
     }
 
-    render () {
+    render ():string|void {
         const {
             type,
             autofocus,
             tabindex,
             disabled,
-            value
+            value,
+            name
         } = this
 
         const classes:string[] = ['substrate-input']
@@ -163,11 +176,10 @@ export abstract class Input extends HTMLElement {
             type ? `type="${this.type}"` : '',
             tabindex ? `tabindex="${tabindex}"` : 'tabindex="0"',
             btn ? 'role="button"' : '',
-            value ? `value=${value}` : ''
+            value ? `value=${value}` : '',
+            name ? `name=${name}` : '',
         ]).filter(Boolean).join(' ')
 
-        this.innerHTML = `<input
-            ${props}
-        />`
+        return `<input ${props} />`
     }
 }

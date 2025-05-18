@@ -13,6 +13,10 @@ class ExampleInput extends Input {
     get type () {
         return 'submit'
     }
+
+    render () {
+        this.innerHTML = super.render()!
+    }
 }
 
 ExampleInput.define()
