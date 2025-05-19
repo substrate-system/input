@@ -154,7 +154,7 @@ export abstract class Input extends HTMLElement {
         this.input?.setAttribute(name, value)
     }
 
-    render ():string|void {
+    render ():string|void {  // void for child class
         const {
             type,
             autofocus,
@@ -171,6 +171,7 @@ export abstract class Input extends HTMLElement {
         const props = ([
             `class="${classes.filter(Boolean).join(' ')}"`,
             disabled ? 'disabled' : '',
+            disabled ? 'aria-disabled="true"' : 'aria-diabled="false"',
             autofocus ? 'autofocus' : '',
             type ? `type="${this.type}"` : '',
             tabindex ? `tabindex="${tabindex}"` : 'tabindex="0"',
