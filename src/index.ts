@@ -1,7 +1,6 @@
 export abstract class Input extends HTMLElement {
-    // Define the attributes to observe
-    // need this for `attributeChangedCallback`
-    static observedAttributes = ['autofocus', 'disabled', 'spinning']
+    // for `attributeChangedCallback`
+    static observedAttributes = ['autofocus', 'disabled']
     static tag:string
 
     static define (this:((new (...args:any[]) => Input) & typeof Input)) {
