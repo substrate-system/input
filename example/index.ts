@@ -4,7 +4,7 @@ import Debug from '@substrate-system/debug'
 const debug = Debug()
 
 document.body.innerHTML += `
-    <example-input value="hello"></example-input>
+    <example-input name="example" value="hello"></example-input>
 `
 
 setTimeout(() => {  // wait for things to render
@@ -16,11 +16,18 @@ setTimeout(() => {  // wait for things to render
 }, 0)
 
 document.body.innerHTML += `
-    <example-input disabled value="this is disabled"></example-input>
+    <example-input name="more-examples" disabled value="this is disabled">
+    </example-input>
 `
 
-document.body.innerHTML += '<example-input value="another input"></example-input>'
+document.body.innerHTML += `<example-input value="another input" name="barrr">
+</example-input>`
 
 document.body.innerHTML += `<hr /><div>
-    <text-input></text-input>
+    <text-input name="fooo"></text-input>
 </div>`
+
+document.body.innerHTML += `<hr />
+    <strong>autofocusing</strong>
+    <text-input id="barrr" name="barrr" autofocus></text-input>
+`

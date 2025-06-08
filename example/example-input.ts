@@ -27,6 +27,10 @@ export class TextInput extends Input {
     get type () {
         return 'text'
     }
+
+    render () {
+        this.innerHTML = super.render()!
+    }
 }
 
 TextInput.define()

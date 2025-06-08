@@ -1,3 +1,6 @@
+// import Debug from '@substrate-system/debug'
+// const debug = Debug()
+
 export abstract class Input extends HTMLElement {
     // for `attributeChangedCallback`
     static observedAttributes = ['autofocus', 'disabled']
@@ -28,8 +31,8 @@ export abstract class Input extends HTMLElement {
             const type = this.getAttribute('type')
             if (type) this.type = type
 
-            const name = this.getAttribute('name')
-            if (name) this.name = name
+            // const name = this.getAttribute('name')
+            // if (name) this.name = name
         }, 0)
     }
 
@@ -44,12 +47,11 @@ export abstract class Input extends HTMLElement {
     }
 
     get name ():string|undefined|null {
-        return this.input?.name
+        return this.getAttribute('name')
     }
 
     set name (newName:string) {
-        if (!this.input) return
-        this.input.name = newName
+        this.setAttribute('name', newName)
     }
 
     /**
@@ -78,22 +80,20 @@ export abstract class Input extends HTMLElement {
      * Handle 'example' attribute changes
      * @see {@link https://gomakethings.com/how-to-detect-when-attributes-change-on-a-web-component/#organizing-your-code Go Make Things article}
      *
-     * @param  {string} oldValue The old attribute value
-     * @param  {string} newValue The new attribute value
+     * @param  {string|null} _oldValue The old attribute value
+     * @param  {string|null} newValue The new attribute value
      */
-    handleChange_disabled (oldValue:string, newValue:string) {
+    handleChange_disabled (_oldValue:string, newValue:string) {
         if (!this.input) {
             setTimeout(() => {
-                if (newValue === null) {
-                    // [example] was removed
+                if (newValue === null || newValue === 'null') {
                     this.disabled = false
                 } else {
-                    // set [example] attribute
                     this.disabled = true
                 }
             }, 0)  // wait to render
         } else {
-            if (newValue === null) {
+            if (newValue === null || newValue === 'null') {
                 this.disabled = false
             } else {
                 this.disabled = true
@@ -163,6 +163,8 @@ export abstract class Input extends HTMLElement {
             value,
             name
         } = this
+
+        if (!name) throw new Error('not name')
 
         const classes:string[] = ['substrate-input']
 
