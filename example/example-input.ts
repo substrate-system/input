@@ -29,7 +29,9 @@ export class TextInput extends Input {
     }
 
     render () {
-        this.innerHTML = super.render()!
+        const html = super.render()!
+        this.innerHTML = html
+        return html
     }
 }
 
