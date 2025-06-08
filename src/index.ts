@@ -171,7 +171,7 @@ export abstract class Input extends HTMLElement {
         const props = ([
             `class="${classes.filter(Boolean).join(' ')}"`,
             disabled ? 'disabled' : '',
-            disabled ? 'aria-disabled="true"' : 'aria-diabled="false"',
+            disabled ? 'aria-disabled="true"' : 'aria-disabled="false"',
             autofocus ? 'autofocus' : '',
             type ? `type="${this.type}"` : '',
             tabindex ? `tabindex="${tabindex}"` : 'tabindex="0"',
