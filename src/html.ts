@@ -11,7 +11,8 @@ export type Attrs = Partial<{
     type:string;
     tabindex:number|string;
     value:string;
-    required:boolean
+    required:boolean;
+    placeholder:string|string[];
     name:string;
 }>
 

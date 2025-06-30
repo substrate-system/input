@@ -31,3 +31,8 @@ document.body.innerHTML += `<hr />
     <strong>autofocusing</strong>
     <text-input id="barrr" name="barrr" autofocus></text-input>
 `
+
+document.body.innerHTML += `<hr />
+    <strong>placeholding</strong>
+    <text-input name="abc" placeholder="abc 123"></text-input>
+`

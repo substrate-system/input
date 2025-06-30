@@ -47,6 +47,10 @@ export abstract class Input extends HTMLElement {
         return this.getAttribute('name')
     }
 
+    get placeholder ():string|null {
+        return this.getAttribute('placeholder')
+    }
+
     set name (newName:string) {
         this.setAttribute('name', newName)
     }
@@ -158,7 +162,8 @@ export abstract class Input extends HTMLElement {
             tabindex,
             disabled,
             value,
-            name
+            name,
+            placeholder
         } = this
 
         if (!name) throw new Error('not name')
@@ -175,8 +180,9 @@ export abstract class Input extends HTMLElement {
             type ? `type="${this.type}"` : '',
             tabindex ? `tabindex="${tabindex}"` : 'tabindex="0"',
             btn ? 'role="button"' : '',
-            value ? `value=${value}` : '',
-            name ? `name=${name}` : '',
+            value ? `value="${value}"` : '',
+            name ? `name="${name}"` : '',
+            placeholder ? `placeholder="${placeholder}"` : ''
         ]).filter(Boolean).join(' ')
 
         return `<input ${props} />`
