@@ -1,5 +1,5 @@
 # input
-[![tests](https://img.shields.io/github/actions/workflow/status/substrate-system/input/nodejs.yml?style=flat-square)](https://github.com/substrate-system/input/actions/workflows/nodejs.yml)
+[![tests](https://img.shields.io/github/actions/workflow/status/substrate-system/util/nodejs.yml?style=flat-square)](https://github.com/substrate-system/util/actions/workflows/nodejs.yml)
 [![types](https://img.shields.io/npm/types/@substrate-system/input?style=flat-square)](README.md)
 [![module](https://img.shields.io/badge/module-ESM%2FCJS-blue?style=flat-square)](README.md)
 [![install size](https://packagephobia.com/badge?p=@substrate-system/input)](https://packagephobia.com/result?p=@substrate-system/input)

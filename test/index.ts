@@ -13,7 +13,7 @@ test('input element', async t => {
     FooBar.define()
 
     document.body.innerHTML += `
-        <foo-bar class="test" type="button">
+        <foo-bar class="test" type="button" name="fooo">
         </foo-bar>
     `
 
@@ -39,7 +39,7 @@ test('Set the "type"', async t => {
     Abc.define()
 
     document.body.innerHTML += `
-        <abc-el></abc-el>
+        <abc-el name="abc"></abc-el>
     `
 
     const el = await waitFor('abc-el')

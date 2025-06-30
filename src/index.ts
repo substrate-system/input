@@ -30,9 +30,6 @@ export abstract class Input extends HTMLElement {
 
             const type = this.getAttribute('type')
             if (type) this.type = type
-
-            // const name = this.getAttribute('name')
-            // if (name) this.name = name
         }, 0)
     }
 
