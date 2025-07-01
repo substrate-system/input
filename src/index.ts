@@ -51,6 +51,10 @@ export abstract class Input extends HTMLElement {
         return this.getAttribute('placeholder')
     }
 
+    get autocomplete ():string|null {
+        return this.getAttribute('autocomplete')
+    }
+
     set name (newName:string) {
         this.setAttribute('name', newName)
     }
@@ -163,7 +167,8 @@ export abstract class Input extends HTMLElement {
             disabled,
             value,
             name,
-            placeholder
+            placeholder,
+            autocomplete
         } = this
 
         if (!name) throw new Error('not name')
@@ -182,6 +187,7 @@ export abstract class Input extends HTMLElement {
             btn ? 'role="button"' : '',
             value ? `value="${value}"` : '',
             name ? `name="${name}"` : '',
+            autocomplete ? `autocomplete="${autocomplete}"` : '',
             placeholder ? `placeholder="${placeholder}"` : ''
         ]).filter(Boolean).join(' ')
 
