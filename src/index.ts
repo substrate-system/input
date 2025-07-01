@@ -4,13 +4,13 @@
 export abstract class Input extends HTMLElement {
     // for `attributeChangedCallback`
     static observedAttributes = ['autofocus', 'disabled']
-    static tag:string
+    static TAG:string
 
     static define (this:((new (...args:any[]) => Input) & typeof Input)) {
         if (!('customElements' in window)) return
-        if (customElements.get(this.tag)) return  // only define it once
+        if (customElements.get(this.TAG)) return  // only define it once
 
-        return customElements.define(this.tag, this)
+        return customElements.define(this.TAG, this)
     }
 
     constructor () {
