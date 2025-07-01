@@ -14,6 +14,7 @@ export type Attrs = Partial<{
     required:boolean;
     placeholder:string|string[];
     name:string;
+    autocomplete:string;
 }>
 
 export function html (attrs:Attrs):string {
