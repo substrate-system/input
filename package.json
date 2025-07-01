@@ -1,6 +1,6 @@
 {
   "name": "@substrate-system/input",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "type": "module",
   "description": "A minimal parent input component to inherit from",
   "main": "dist/index.js",
