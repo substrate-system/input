@@ -4,7 +4,7 @@ import { Input } from '../src/index.js'
 
 test('input element', async t => {
     class FooBar extends Input {
-        static tag = 'foo-bar'
+        static TAG = 'foo-bar'
 
         render () {
             this.innerHTML = super.render()!
@@ -26,7 +26,7 @@ test('input element', async t => {
 
 test('Set the "type"', async t => {
     class Abc extends Input {
-        static tag = 'abc-el'
+        static TAG = 'abc-el'
 
         get type () {
             return 'text'
