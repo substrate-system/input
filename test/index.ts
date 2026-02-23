@@ -11,8 +11,8 @@ test('should find the element', async t => {
         ></substrate-input>
     `
 
-    const el = await waitFor('substrate-input')
-    t.ok(el, 'should find an element')
+    const el = await waitFor('substrate-input input')
+    t.ok(el, 'should find an input element')
 })
 
 test('should delegate id to inner input', async t => {
@@ -57,4 +57,9 @@ test('should render label when label attribute is set', async t => {
     t.ok(label, 'should render a label element')
     t.equal(label?.textContent?.trim(), 'My Label',
         'label should have correct text')
+})
+
+test('all done', () => {
+    // @ts-expect-error tests
+    window.testsFinished = true
 })

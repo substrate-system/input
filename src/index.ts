@@ -9,8 +9,7 @@ declare global {
     }
 }
 
-export class SubstrateInput extends
-WebComponent.create('substrate-input') {
+export class SubstrateInput extends WebComponent.create('substrate-input') {
     static TAG = 'substrate-input'
     static INPUT_ATTRIBUTES = INPUT_ATTRIBUTES
     static ARIA_ATTRIBUTES = ARIA_ATTRIBUTES
@@ -23,8 +22,7 @@ WebComponent.create('substrate-input') {
     inputAriaAttributes:Record<string, string> = {}
     ignoredAriaCallbackNames:Set<string> = new Set()
     ignoredIdCallback = false
-    generatedInputId =
-        `substrate-input-${Math.random().toString(36).slice(2, 10)}`
+    generatedInputId = `substrate-input-${Math.random().toString(36).slice(2, 10)}`
 
     handleChange_label (_oldValue, _newValue) {
         this.render()
