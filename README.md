@@ -15,7 +15,20 @@ Inputs with style.
 [See a live demo](https://substrate-system.github.io/input/)
 
 <details><summary><h2>Contents</h2></summary>
+
 <!-- toc -->
+
+- [Install](#install)
+- [CSS](#css)
+  * [Import CSS](#import-css)
+  * [Customize CSS via some variables](#customize-css-via-some-variables)
+- [use](#use)
+  * [JS](#js)
+  * [HTML](#html)
+  * [pre-built](#pre-built)
+
+<!-- tocstop -->
+
 </details>
 
 ## Install
