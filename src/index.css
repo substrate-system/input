@@ -1,10 +1,35 @@
+substrate-input {
+    display: block;
+
+    & .substrate.input {
+        min-width: 100%;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+
+        & .label-content {
+            width: 100%;
+        }
+
+        & input {
+            transition: all 0.2s;
+            padding: 1rem;
+            padding-bottom: 0.8rem;
+            width: 100%;
+            border: 1px solid;
+            border-radius: 0;
+            outline: 1px solid transparent;
+
+            &:focus {
+                outline: 1px solid;
+            }
+        }
+    }
+}
+
 /**
  * Don't show until JavaScript is instantiated
  */
-{{component-name}}:not(:defined) {
-	display: none;
-}
-
-{{component-name}} {
-    background-color: red;
+substrate-input:not(:defined) {
+    visibility: hidden;
 }

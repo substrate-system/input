@@ -1,98 +1,208 @@
-import { createDebug } from '@substrate-system/debug'
-const debug = createDebug()
+import { WebComponent } from '@substrate-system/web-component'
+import { define } from '@substrate-system/web-component/util'
+import { ARIA_ATTRIBUTES, INPUT_ATTRIBUTES } from './util'
 
-// for docuement.querySelector
+// for document.querySelector
 declare global {
     interface HTMLElementTagNameMap {
-        '{{component-name}}': Example
+        'substrate-input': SubstrateInput
     }
 }
 
-export class Example extends HTMLElement {
-    // Define the attributes to observe
-    // need this for `attributeChangedCallback`
-    static observedAttributes = ['example']
+export class SubstrateInput extends
+WebComponent.create('substrate-input') {
+    static TAG = 'substrate-input'
+    static INPUT_ATTRIBUTES = INPUT_ATTRIBUTES
+    static ARIA_ATTRIBUTES = ARIA_ATTRIBUTES
 
-    example:string|null
+    static observedAttributes = (['label', 'id'])
+        .concat(SubstrateInput.INPUT_ATTRIBUTES)
+        .concat(SubstrateInput.ARIA_ATTRIBUTES)
 
-    constructor () {
-        super()
-        const example = this.getAttribute('example')
-        this.example = example
+    inputId:string|null = null
+    inputAriaAttributes:Record<string, string> = {}
+    ignoredAriaCallbackNames:Set<string> = new Set()
+    ignoredIdCallback = false
+    generatedInputId =
+        `substrate-input-${Math.random().toString(36).slice(2, 10)}`
 
-        this.innerHTML = `<div>
-            <p>example</p>
-            <ul>
-                ${Array.from(this.children).filter(Boolean).map(node => {
-                    return `<li>${node.outerHTML}</li>`
-                }).join('')}
-            </ul>
-        </div>`
+    handleChange_label (_oldValue, _newValue) {
+        this.render()
     }
 
-    /**
-     * Handle 'example' attribute changes
-     * @see {@link https://gomakethings.com/how-to-detect-when-attributes-change-on-a-web-component/#organizing-your-code Go Make Things article}
-     *
-     * @param  {string} oldValue The old attribute value
-     * @param  {string} newValue The new attribute value
-     */
-    handleChange_example (oldValue:string, newValue:string) {
-        debug('handling example change', oldValue, newValue)
+    handleChange_aria (
+        name:string,
+        _oldValue:string|null,
+        newValue:string|null
+    ) {
+        if (this.ignoredAriaCallbackNames.has(name)) {
+            this.ignoredAriaCallbackNames.delete(name)
+            return
+        }
 
         if (newValue === null) {
-            // [example] was removed
-        } else {
-            // set [example] attribute
+            delete this.inputAriaAttributes[name]
+            this.querySelector('input')?.removeAttribute(name)
+            return
+        }
+
+        this.inputAriaAttributes[name] = newValue
+        this.querySelector('input')?.setAttribute(name, newValue)
+
+        if (this.hasAttribute(name)) {
+            this.ignoredAriaCallbackNames.add(name)
+            this.removeAttribute(name)
         }
     }
 
-    /**
-     * Runs when the value of an attribute is changed
-     *
-     * @param  {string} name     The attribute name
-     * @param  {string} oldValue The old attribute value
-     * @param  {string} newValue The new attribute value
-     */
-    attributeChangedCallback (name:string, oldValue:string, newValue:string) {
-        debug('an attribute changed', name)
-        const handler = this[`handleChange_${name}`];
-        (handler && handler(oldValue, newValue))
-        this.render()
+    handleChange_id (_oldValue:string|null, newValue:string|null) {
+        if (this.ignoredIdCallback) {
+            this.ignoredIdCallback = false
+            return
+        }
+
+        if (newValue === null) {
+            this.inputId = null
+            this.querySelector('input')?.removeAttribute('id')
+            return
+        }
+
+        this.inputId = newValue
+        this.querySelector('input')?.setAttribute('id', newValue)
+
+        if (this.hasAttribute('id')) {
+            this.ignoredIdCallback = true
+            this.removeAttribute('id')
+        }
     }
 
-    disconnectedCallback () {
-        debug('disconnected')
+    handleChange_inputAttribute (name:string, newValue:string|null) {
+        const input = this.querySelector('input')
+        if (!input) return
+
+        if (newValue === null) {
+            input.removeAttribute(name)
+            return
+        }
+
+        input.setAttribute(name, newValue)
+    }
+
+    async attributeChangedCallback (
+        name:string,
+        oldValue:string,
+        newValue:string
+    ) {
+        if (name === 'id') {
+            this.handleChange_id(oldValue, newValue)
+            return
+        }
+
+        if (name.startsWith('aria-')) {
+            this.handleChange_aria(name, oldValue, newValue)
+            return
+        }
+
+        if (SubstrateInput.INPUT_ATTRIBUTES.includes(name)) {
+            this.handleChange_inputAttribute(name, newValue)
+            return
+        }
+
+        if (this[`handleChange_${name}`]) {
+            this[`handleChange_${name}`](oldValue, newValue)
+        }
     }
 
     connectedCallback () {
-        debug('connected')
-
-        const observer = new MutationObserver(function (mutations) {
-            mutations.forEach((mutation) => {
-                if (mutation.addedNodes.length) {
-                    debug('Node added: ', mutation.addedNodes)
-                }
-            })
-        })
-
-        observer.observe(this, { childList: true })
-
         this.render()
     }
 
+    getInputIdForRender () {
+        return this.inputId || this.generatedInputId
+    }
+
+    set label (value:string|null) {
+        if (value === null) {
+            this.removeAttribute('label')
+            return
+        }
+        this.setAttribute('label', value)
+    }
+
+    get label ():string|null {
+        return this.getAttribute('label')
+    }
+
     render () {
-        this.innerHTML = `<div>
-            <p>example</p>
-            <ul>
-                ${Array.from(this.children).filter(Boolean).map(node => {
-                    return `<li>${node.outerHTML}</li>`
-                }).join('')}
-            </ul>
-        </div>`
+        const label = this.getAttribute('label')
+        const hostId = this.getAttribute('id')
+        const hostAriaAttributes = Array.from(this.attributes)
+            .filter(attr => attr.name.startsWith('aria-'))
+
+        if (hostId !== null) {
+            this.inputId = hostId
+        }
+
+        for (const attr of hostAriaAttributes) {
+            this.inputAriaAttributes[attr.name] = attr.value
+        }
+
+        const name = this.getAttribute('name')
+        const attrs = Array.from(this.attributes)
+            .filter(attr =>
+                attr.name !== 'label' &&
+                attr.name !== 'id' &&
+                !attr.name.startsWith('aria-')
+            )
+            .map(attr => attr.name + (attr.value === '' ?
+                '' :
+                ('=' + `"${attr.value}"`))
+            )
+            .join(' ')
+
+        const classes = (this.getAttribute('class') ?? '').split(' ')
+            .concat(['substrate', 'input', name || ''])
+            .filter(Boolean)
+            .join(' ')
+
+        const inputId = this.getInputIdForRender()
+        const renderedIdAttribute = `id="${inputId}"`
+        const ariaAttributes = Object.entries(this.inputAriaAttributes)
+            .map(([attrName, attrValue]) => {
+                return (attrName + (attrValue === '' ?
+                    '' :
+                    ('=' + `"${attrValue}"`)))
+            })
+            .join(' ')
+
+        this.innerHTML = label ? `
+            <div class="${classes}">
+            <label class="label-content" for="${inputId}">${label}</label>
+            <input
+            ${renderedIdAttribute}
+            ${ariaAttributes}
+            ${attrs}
+            />
+            </div>
+        ` : `
+            <div class="${classes}">
+            <input
+            ${renderedIdAttribute}
+            ${ariaAttributes}
+            ${attrs}
+            />
+            </div>
+        `
+
+        if (this.hasAttribute('id')) {
+            this.ignoredIdCallback = true
+            this.removeAttribute('id')
+        }
+        for (const attr of hostAriaAttributes) {
+            this.ignoredAriaCallbackNames.add(attr.name)
+            this.removeAttribute(attr.name)
+        }
     }
 }
 
-if ('customElements' in window) {
-    customElements.define('{{component-name}}', Example)
-}
+define(SubstrateInput.TAG, SubstrateInput)
