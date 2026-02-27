@@ -15,6 +15,19 @@ test('should find the element', async t => {
     t.ok(el, 'should find an input element')
 })
 
+test('input element should always have a type', async t => {
+    document.body.innerHTML += `
+        <substrate-input id="abc"></substrate-input>
+        <substrate-input id="custom-type" type="foo"></substrate-input>
+    `
+
+    const el = await waitFor('#abc') as HTMLInputElement
+    t.equal(el.getAttribute('type'), 'text', 'should default to "text" type')
+    const el2 = await waitFor('#custom-type') as HTMLInputElement
+    t.equal(el2.getAttribute('type'), 'foo',
+        'Can pass in an arbitrary "type" attribute')
+})
+
 test('should delegate id to inner input', async t => {
     document.body.innerHTML += `
         <substrate-input id="my-field" name="field"></substrate-input>

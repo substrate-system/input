@@ -174,23 +174,17 @@ export class SubstrateInput extends WebComponent.create('substrate-input') {
             .join(' ')
 
         this.innerHTML = label ? `
-            <div class="${classes}">
+        <div class="${classes}">
             <label class="label-content" for="${inputId}">${label}</label>
-            <input
-            ${renderedIdAttribute}
-            ${ariaAttributes}
-            ${attrs}
+            <input ${renderedIdAttribute} ${ariaAttributes} ${attrs}
+                type="${this.getAttribute('type') || 'text'}"
             />
-            </div>
-        ` : `
-            <div class="${classes}">
-            <input
-            ${renderedIdAttribute}
-            ${ariaAttributes}
-            ${attrs}
+            </div>` :
+        `<div class="${classes}">
+            <input ${renderedIdAttribute} ${ariaAttributes} ${attrs}
+                type="${this.getAttribute('type') || 'text'}"
             />
-            </div>
-        `
+        </div>`
 
         if (this.hasAttribute('id')) {
             this.ignoredIdCallback = true
